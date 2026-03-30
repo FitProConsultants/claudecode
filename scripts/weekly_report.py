@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Rapport hebdomadaire CEO
-Analyse Google Agenda de la semaine passée et envoie un résumé + conseil sur Slack.
+Récupère tous les calendriers Google partagés, calcule les heures par catégorie,
+génère un conseil CEO avec Claude et envoie le tout sur Slack.
 """
 
 import os
@@ -11,29 +12,12 @@ import pytz
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 import requests
-import anthropic
 
 # Timezone Québec
 TIMEZONE = pytz.timezone("America/Montreal")
 
-# Mapping couleur Google Agenda → catégorie
-# colorId: https://developers.google.com/calendar/api/v3/reference/colors
-COLOR_TO_CATEGORY = {
-    "1":  "Opérations",          # Lavande
-    "2":  "Formation",            # Sauge
-    "3":  "Rocks",                # Raisin (Grape)
-    "4":  "Meeting",              # Flamant (Flamingo)
-    "5":  "Personnel",            # Banane — EXCLU
-    "6":  "Meeting",              # Mandarine
-    "7":  "Opérations",           # Paon (Peacock)
-    "8":  "Acquisition Clients",  # Myrtille (Blueberry)
-    "9":  "Formation",            # Basilic (Basil)
-    "10": "Meeting",              # Tomate
-    "11": "Rencontre Clients",    # Graphite
-}
-
-# Catégories exclues du rapport
-EXCLUDED_CATEGORIES = {"Personnel"}
+# Calendriers à exclure du rapport (insensible à la casse)
+EXCLUDED_CALENDARS = {"personnel"}
 
 
 def get_calendar_service():
@@ -55,11 +39,23 @@ def get_last_week_range():
     return last_monday, last_sunday
 
 
-def fetch_events(service, calendar_id, time_min, time_max):
-    """Récupère tous les événements dans la plage de temps."""
+def get_accessible_calendars(service):
+    """Retourne la liste de tous les calendriers accessibles au compte de service."""
+    calendars = []
+    page_token = None
+    while True:
+        result = service.calendarList().list(pageToken=page_token).execute()
+        calendars.extend(result.get("items", []))
+        page_token = result.get("nextPageToken")
+        if not page_token:
+            break
+    return calendars
+
+
+def fetch_events_from_calendar(service, calendar_id, time_min, time_max):
+    """Récupère tous les événements d'un calendrier dans la plage de temps."""
     all_events = []
     page_token = None
-
     while True:
         result = service.events().list(
             calendarId=calendar_id,
@@ -69,57 +65,30 @@ def fetch_events(service, calendar_id, time_min, time_max):
             orderBy="startTime",
             pageToken=page_token,
         ).execute()
-
         all_events.extend(result.get("items", []))
         page_token = result.get("nextPageToken")
         if not page_token:
             break
-
     return all_events
 
 
-def categorize_events(events):
-    """
-    Calcule les heures par catégorie.
-    Retourne (dict catégorie→heures, liste événements sans couleur connue).
-    """
-    category_hours = {}
-    unknown_events = []
-
+def calculate_hours(events):
+    """Calcule le total d'heures pour une liste d'événements (ignore journées entières)."""
+    total = 0.0
     for event in events:
         start = event.get("start", {})
         end = event.get("end", {})
-
-        # Ignorer les événements sans heure précise (journée entière)
         if "dateTime" not in start:
             continue
-
-        color_id = event.get("colorId", "0")
-        category = COLOR_TO_CATEGORY.get(color_id)
-
-        if category is None:
-            # Couleur inconnue → on note pour le log mais on classe en "Autre"
-            unknown_events.append({
-                "title": event.get("summary", "Sans titre"),
-                "colorId": color_id,
-            })
-            category = "Autre"
-
-        if category in EXCLUDED_CATEGORIES:
-            continue
-
         start_dt = datetime.fromisoformat(start["dateTime"])
         end_dt = datetime.fromisoformat(end["dateTime"])
-        duration = (end_dt - start_dt).total_seconds() / 3600
-
-        category_hours[category] = category_hours.get(category, 0) + duration
-
-    return category_hours, unknown_events
+        total += (end_dt - start_dt).total_seconds() / 3600
+    return total
 
 
 def get_ai_advice(category_hours, total_hours):
-    """Génère un conseil CEO avec Claude."""
-    client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
+    """Génère un conseil CEO avec Claude via l'API Anthropic."""
+    import urllib.request
 
     sorted_cats = sorted(category_hours.items(), key=lambda x: x[1], reverse=True)
     breakdown = "\n".join([f"  - {cat}: {h:.1f}h" for cat, h in sorted_cats])
@@ -136,13 +105,27 @@ Donne un conseil court et percutant (3 phrases max) basé sur cette répartition
 Identifie ce qui freine la croissance ou ce qu'il devrait déléguer/réduire.
 Sois direct, concret et actionnable. Réponds en français."""
 
-    response = client.messages.create(
-        model="claude-opus-4-6",
-        max_tokens=400,
-        messages=[{"role": "user", "content": prompt}],
+    payload = json.dumps({
+        "model": "claude-opus-4-6",
+        "max_tokens": 400,
+        "messages": [{"role": "user", "content": prompt}],
+    }).encode("utf-8")
+
+    req = urllib.request.Request(
+        "https://api.anthropic.com/v1/messages",
+        data=payload,
+        headers={
+            "x-api-key": os.environ["ANTHROPIC_API_KEY"],
+            "anthropic-version": "2023-06-01",
+            "content-type": "application/json",
+        },
+        method="POST",
     )
 
-    return response.content[0].text
+    with urllib.request.urlopen(req) as resp:
+        data = json.loads(resp.read().decode("utf-8"))
+
+    return data["content"][0]["text"]
 
 
 def build_slack_blocks(category_hours, total_hours, advice, week_start, week_end):
@@ -160,10 +143,7 @@ def build_slack_blocks(category_hours, total_hours, advice, week_start, week_end
     return [
         {
             "type": "header",
-            "text": {
-                "type": "plain_text",
-                "text": f"📊 Rapport hebdo — {week_str}",
-            },
+            "text": {"type": "plain_text", "text": f"Rapport hebdo — {week_str}"},
         },
         {
             "type": "section",
@@ -175,10 +155,7 @@ def build_slack_blocks(category_hours, total_hours, advice, week_start, week_end
         {"type": "divider"},
         {
             "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": f"💡 *Conseil :*\n{advice}",
-            },
+            "text": {"type": "mrkdwn", "text": f"Conseil :\n{advice}"},
         },
     ]
 
@@ -186,36 +163,43 @@ def build_slack_blocks(category_hours, total_hours, advice, week_start, week_end
 def send_slack(blocks):
     """Envoie le message sur Slack."""
     webhook_url = os.environ["SLACK_WEBHOOK_URL"]
-    response = requests.post(
-        webhook_url,
-        json={"blocks": blocks},
-        timeout=10,
-    )
+    response = requests.post(webhook_url, json={"blocks": blocks}, timeout=10)
     response.raise_for_status()
 
 
 def main():
-    calendar_id = os.environ["GOOGLE_CALENDAR_ID"]
     week_start, week_end = get_last_week_range()
-
     print(f"Période analysée : {week_start.strftime('%Y-%m-%d')} → {week_end.strftime('%Y-%m-%d')}")
 
     service = get_calendar_service()
-    events = fetch_events(service, calendar_id, week_start, week_end)
-    print(f"{len(events)} événements récupérés")
 
-    category_hours, unknown = categorize_events(events)
+    # Récupère tous les calendriers accessibles
+    calendars = get_accessible_calendars(service)
+    print(f"{len(calendars)} calendrier(s) accessible(s) :")
+    for cal in calendars:
+        print(f"  - {cal['summary']} ({cal['id']})")
 
-    if unknown:
-        print(f"⚠️  {len(unknown)} événements avec couleur inconnue :")
-        for e in unknown:
-            print(f"   - colorId={e['colorId']} : {e['title']}")
-        print("   → Ajoutez ces colorId dans COLOR_TO_CATEGORY si nécessaire.")
+    # Calcule les heures par calendrier (= par catégorie)
+    category_hours = {}
+    for cal in calendars:
+        name = cal["summary"]
+        cal_id = cal["id"]
+
+        if name.lower() in EXCLUDED_CALENDARS:
+            print(f"  ⏭ Ignoré (exclu) : {name}")
+            continue
+
+        events = fetch_events_from_calendar(service, cal_id, week_start, week_end)
+        hours = calculate_hours(events)
+
+        if hours > 0:
+            category_hours[name] = category_hours.get(name, 0) + hours
+            print(f"  ✓ {name} : {hours:.1f}h ({len(events)} événements)")
+        else:
+            print(f"  - {name} : 0h")
 
     total_hours = sum(category_hours.values())
-    print(f"Total heures : {total_hours:.1f}h")
-    for cat, h in sorted(category_hours.items(), key=lambda x: x[1], reverse=True):
-        print(f"  {cat}: {h:.1f}h")
+    print(f"\nTotal : {total_hours:.1f}h")
 
     if total_hours == 0:
         print("Aucune heure enregistrée cette semaine — rapport non envoyé.")
@@ -228,7 +212,7 @@ def main():
     print("Envoi sur Slack...")
     blocks = build_slack_blocks(category_hours, total_hours, advice, week_start, week_end)
     send_slack(blocks)
-    print("✅ Message envoyé avec succès!")
+    print("Message envoyé avec succès!")
 
 
 if __name__ == "__main__":

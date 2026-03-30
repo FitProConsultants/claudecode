@@ -10,7 +10,8 @@ import json
 import urllib.request
 from datetime import datetime, timedelta
 import pytz
-from google.oauth2 import service_account
+from google.oauth2.credentials import Credentials
+from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 import requests
 
@@ -30,12 +31,16 @@ EXCLUDED_CATEGORIES = {"Personnel"}
 
 
 def get_calendar_service():
-    service_account_info = json.loads(os.environ["GOOGLE_SERVICE_ACCOUNT_JSON"])
-    credentials = service_account.Credentials.from_service_account_info(
-        service_account_info,
+    creds = Credentials(
+        token=None,
+        refresh_token=os.environ["GOOGLE_OAUTH_REFRESH_TOKEN"],
+        client_id=os.environ["GOOGLE_OAUTH_CLIENT_ID"],
+        client_secret=os.environ["GOOGLE_OAUTH_CLIENT_SECRET"],
+        token_uri="https://oauth2.googleapis.com/token",
         scopes=["https://www.googleapis.com/auth/calendar.readonly"],
     )
-    return build("calendar", "v3", credentials=credentials)
+    creds.refresh(Request())
+    return build("calendar", "v3", credentials=creds)
 
 
 def get_last_week_range():

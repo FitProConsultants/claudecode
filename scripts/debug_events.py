@@ -28,25 +28,45 @@ def main():
     service = get_calendar_service()
 
     now = datetime.now(TIMEZONE)
-    time_min = (now - timedelta(days=7)).isoformat()
-    time_max = now.isoformat()
+    # Semaine courante : lundi au dimanche
+    monday = now - timedelta(days=now.weekday())
+    monday = monday.replace(hour=0, minute=0, second=0, microsecond=0)
+    sunday = monday + timedelta(days=6, hours=23, minutes=59, seconds=59)
+
+    print(f"Période : {monday.strftime('%Y-%m-%d')} → {sunday.strftime('%Y-%m-%d')}\n")
 
     result = service.events().list(
         calendarId=calendar_id,
-        timeMin=time_min,
-        timeMax=time_max,
+        timeMin=monday.isoformat(),
+        timeMax=sunday.isoformat(),
         singleEvents=True,
         orderBy="startTime",
-        maxResults=5,
     ).execute()
 
     events = result.get("items", [])
     print(f"=== {len(events)} événements récupérés ===\n")
 
-    for i, event in enumerate(events):
-        print(f"--- Événement {i+1}: {event.get('summary', 'Sans titre')} ---")
+    # Résumé colorId
+    from collections import Counter
+    color_counts = Counter(e.get("colorId", "AUCUN") for e in events if "dateTime" in e.get("start", {}))
+    print("=== Résumé colorId ===")
+    for color_id, count in sorted(color_counts.items()):
+        print(f"  colorId={color_id}: {count} événements")
+    print()
+
+    # Affiche les 3 premiers événements avec colorId
+    labeled = [e for e in events if "colorId" in e]
+    print(f"=== {len(labeled)} événements avec colorId ===")
+    for event in labeled[:3]:
+        print(f"\n--- {event.get('summary', 'Sans titre')} ---")
         print(json.dumps(event, indent=2, ensure_ascii=False))
-        print()
+
+    # Affiche aussi 2 événements sans colorId pour comparer
+    unlabeled = [e for e in events if "colorId" not in e and "dateTime" in e.get("start", {})]
+    print(f"\n=== Exemple sans colorId ===")
+    for event in unlabeled[:2]:
+        print(f"\n--- {event.get('summary', 'Sans titre')} ---")
+        print(json.dumps(event, indent=2, ensure_ascii=False))
 
 
 if __name__ == "__main__":

@@ -116,8 +116,13 @@ Format : {{"titre de l'événement": "Catégorie", ...}}"""
         method="POST",
     )
 
-    with urllib.request.urlopen(req) as resp:
-        data = json.loads(resp.read().decode("utf-8"))
+    try:
+        with urllib.request.urlopen(req) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as e:
+        error_body = e.read().decode("utf-8")
+        print(f"Anthropic API error {e.code}: {error_body}")
+        raise
 
     raw = data["content"][0]["text"].strip()
     # Nettoyer si Claude ajoute des backticks
@@ -185,8 +190,13 @@ Sois direct, concret et actionnable. Réponds en français."""
         method="POST",
     )
 
-    with urllib.request.urlopen(req) as resp:
-        data = json.loads(resp.read().decode("utf-8"))
+    try:
+        with urllib.request.urlopen(req) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as e:
+        error_body = e.read().decode("utf-8")
+        print(f"Anthropic API error {e.code}: {error_body}")
+        raise
 
     return data["content"][0]["text"]
 

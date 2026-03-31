@@ -1,0 +1,9 @@
+Remplacez ce texte par la transcription de votre vidéo YouTube.
+
+Vous pouvez copier-coller directement le transcript depuis YouTube :
+- Ouvrez votre vidéo sur YouTube
+- Cliquez sur les "..." sous la vidéo
+- Sélectionnez "Afficher la transcription"
+- Copiez tout le texte et collez-le ici
+
+Le nom du fichier (ex: "comment-doubler-ses-revenus.txt") sera utilisé comme titre du carousel.

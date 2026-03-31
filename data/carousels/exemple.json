@@ -1,0 +1,69 @@
+{
+  "source": "transcripts/exemple.txt",
+  "titre": "Exemple",
+  "carousel": {
+    "titre_carousel": "Exemple",
+    "description_post": "J'ai résumé les points clés de cette vidéo en un carousel ultra-concis. Swipe pour découvrir l'essentiel en moins de 2 minutes 👇",
+    "slides": [
+      {
+        "numero": 1,
+        "titre": "⚠️ Tu fais probablement cette erreur",
+        "contenu": "La plupart des gens consomment du contenu sans jamais en extraire la vraie valeur.\n\nVoici comment changer ça 👇",
+        "visuel_suggere": "Fond bold avec texte en gros, couleur contrastée (rouge/noir), visage surpris ou emoji alarme",
+        "emoji": "⚠️"
+      },
+      {
+        "numero": 2,
+        "titre": "📌 Étape 1 : Remplacez par votre insight #1",
+        "contenu": "Ce slide correspond au premier point clé de votre vidéo.\n\nCollez votre vraie transcription pour obtenir un carousel basé sur votre contenu réel.",
+        "visuel_suggere": "Icône ou illustration liée au premier conseil, fond clair et épuré",
+        "emoji": "📌"
+      },
+      {
+        "numero": 3,
+        "titre": "💡 Étape 2 : Insight #2 de la vidéo",
+        "contenu": "Chaque slide extraira un conseil concret, une stat marquante ou une idée forte directement issue de vos propos.",
+        "visuel_suggere": "Ampoule ou graphique simple, design minimaliste",
+        "emoji": "💡"
+      },
+      {
+        "numero": 4,
+        "titre": "🔑 Étape 3 : Le point qui change tout",
+        "contenu": "C'est ici que se trouve la pépite — le moment de la vidéo où tout bascule.\n\nCollez votre transcription pour le révéler.",
+        "visuel_suggere": "Clé dorée ou élément visuel fort symbolisant un tournant",
+        "emoji": "🔑"
+      },
+      {
+        "numero": 5,
+        "titre": "🚀 Étape 4 : Passage à l'action",
+        "contenu": "Un bon contenu sans action = du divertissement.\n\nAvec votre vraie transcription, ce slide donnera l'étape concrète à appliquer dès aujourd'hui.",
+        "visuel_suggere": "Fusée ou checklist visuelle, fond dynamique",
+        "emoji": "🚀"
+      },
+      {
+        "numero": 6,
+        "titre": "⚡ L'erreur à éviter absolument",
+        "contenu": "Chaque bonne vidéo contient un avertissement clé.\n\nCe slide le mettra en avant pour que votre audience ne tombe pas dans le piège.",
+        "visuel_suggere": "Panneau stop ou croix rouge sur fond contrasté",
+        "emoji": "⚡"
+      },
+      {
+        "numero": 7,
+        "titre": "🎯 Envie d'aller plus loin ?",
+        "contenu": "1️⃣ Enregistre ce post pour y revenir\n2️⃣ Commente \"GO\" si tu veux plus de contenus comme celui-ci\n3️⃣ Partage à quelqu'un qui en a besoin\n\n👉 Lien de la vidéo complète en commentaire",
+        "visuel_suggere": "Design CTA clair avec flèches, bouton visuel 'Suivre', couleurs vives",
+        "emoji": "🎯"
+      }
+    ],
+    "hashtags": [
+      "#ContentCreation",
+      "#Carousel",
+      "#LinkedIn",
+      "#Instagram",
+      "#Productivité",
+      "#Valeur",
+      "#CréationDeContenu",
+      "#Growth"
+    ]
+  }
+}

@@ -4,11 +4,16 @@
   "description": "My Remotion video",
   "scripts": {
     "start": "remotion studio",
-    "build": "remotion render",
+    "studio": "remotion studio",
+    "render": "remotion render VideoWithGraphics out/video.mp4",
+    "render:vertical": "remotion render VideoWithGraphics out/video_vertical.mp4 --width 1080 --height 1920",
+    "transcribe": "node --input-type=module scripts/transcribe.js",
     "upgrade": "remotion upgrade"
   },
   "dependencies": {
     "@remotion/cli": "4.0.448",
+    "@remotion/media-utils": "^4.0.448",
+    "openai": "^6.34.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "remotion": "4.0.448"

@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitPro Consultants – Résultats Clients</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green: #0bE441;
+      --dark: #0f1b2d;
+      --dark2: #152336;
+      --dark3: #1c2f45;
+      --white: #ffffff;
+      --gray: #8fa3bc;
+      --border: rgba(11, 228, 65, 0.18);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--dark);
+      color: var(--white);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(15, 27, 45, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .nav-logo-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--green);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 16px;
+      color: var(--dark);
+    }
+
+    .nav-logo span {
+      font-weight: 800;
+      font-size: 18px;
+      color: var(--white);
+    }
+
+    .nav-logo span em {
+      color: var(--green);
+      font-style: normal;
+    }
+
+    .nav-cta {
+      background: var(--green);
+      color: var(--dark);
+      font-weight: 700;
+      font-size: 14px;
+      padding: 10px 22px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .nav-cta:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    /* ─── HERO ─── */
+    .hero {
+      padding: 90px 5% 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -180px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(11, 228, 65, 0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(11, 228, 65, 0.12);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--green);
+      margin-bottom: 28px;
+    }
+
+    .hero-badge-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    .hero h1 {
+      font-size: clamp(36px, 5.5vw, 68px);
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: -1.5px;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 .accent { color: var(--green); }
+
+    .hero p {
+      font-size: clamp(16px, 2vw, 20px);
+      color: var(--gray);
+      max-width: 640px;
+      margin: 0 auto 42px;
+    }
+
+    .hero-cta {
+      display: inline-block;
+      background: var(--green);
+      color: var(--dark);
+      font-weight: 800;
+      font-size: 17px;
+      padding: 16px 40px;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0 40px rgba(11, 228, 65, 0.3);
+    }
+
+    .hero-cta:hover {
+      opacity: 0.88;
+      transform: translateY(-2px);
+      box-shadow: 0 0 60px rgba(11, 228, 65, 0.45);
+    }
+
+    /* ─── STATS BAR ─── */
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--dark2);
+      padding: 0 5%;
+    }
+
+    .stat-item {
+      padding: 32px 48px;
+      text-align: center;
+      border-right: 1px solid var(--border);
+      flex: 1;
+      min-width: 160px;
+    }
+
+    .stat-item:last-child { border-right: none; }
+
+    .stat-num {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 900;
+      color: var(--green);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: var(--gray);
+      font-weight: 500;
+    }
+
+    /* ─── TABS SECTION ─── */
+    .tabs-section {
+      padding: 80px 5%;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: clamp(26px, 3.5vw, 42px);
+      font-weight: 900;
+      letter-spacing: -0.8px;
+      margin-bottom: 12px;
+    }
+
+    .section-sub {
+      text-align: center;
+      color: var(--gray);
+      font-size: 16px;
+      margin-bottom: 48px;
+    }
+
+    .tabs-nav {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 48px;
+    }
+
+    .tab-btn {
+      padding: 12px 28px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--gray);
+      font-size: 15px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.22s;
+    }
+
+    .tab-btn:hover {
+      background: rgba(11, 228, 65, 0.08);
+      color: var(--white);
+      border-color: rgba(11, 228, 65, 0.4);
+    }
+
+    .tab-btn.active {
+      background: var(--green);
+      color: var(--dark);
+      border-color: var(--green);
+      box-shadow: 0 0 24px rgba(11, 228, 65, 0.3);
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ─── ÉTUDE DE CAS ─── */
+    .case-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 24px;
+    }
+
+    .case-card {
+      background: var(--dark2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+
+    .case-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.35), 0 0 0 1px rgba(11,228,65,0.2);
+    }
+
+    .case-header {
+      background: var(--dark3);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .case-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--green), #057a22);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 18px;
+      color: var(--dark);
+      flex-shrink: 0;
+    }
+
+    .case-name { font-weight: 700; font-size: 16px; }
+    .case-type { font-size: 13px; color: var(--gray); margin-top: 2px; }
+
+    .case-body { padding: 24px; }
+
+    .case-row {
+      margin-bottom: 16px;
+    }
+
+    .case-row-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--green);
+      margin-bottom: 5px;
+    }
+
+    .case-row-text {
+      font-size: 14px;
+      color: var(--gray);
+      line-height: 1.55;
+    }
+
+    .case-result {
+      background: rgba(11, 228, 65, 0.09);
+      border: 1px solid rgba(11, 228, 65, 0.25);
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-top: 16px;
+    }
+
+    .case-result-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--green);
+      margin-bottom: 4px;
+    }
+
+    .case-result-text {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    /* ─── VICTOIRES CLIENTS ─── */
+    .wins-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 18px;
+    }
+
+    .win-card {
+      background: var(--dark2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: transform 0.25s, box-shadow 0.25s;
+      cursor: pointer;
+    }
+
+    .win-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.35), 0 0 0 1px rgba(11,228,65,0.2);
+    }
+
+    .win-img-placeholder {
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: var(--dark3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: var(--gray);
+      font-size: 13px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .win-img-placeholder img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .win-img-placeholder svg {
+      width: 36px;
+      height: 36px;
+      opacity: 0.35;
+    }
+
+    .win-caption {
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .win-caption-text { font-size: 14px; font-weight: 600; }
+    .win-caption-tag {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--green);
+      background: rgba(11, 228, 65, 0.1);
+      border: 1px solid rgba(11,228,65,0.25);
+      border-radius: 100px;
+      padding: 3px 10px;
+    }
+
+    /* ─── HISTOIRES À SUCCÈS ─── */
+    .stories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .story-card {
+      background: var(--dark2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      transition: transform 0.25s, box-shadow 0.25s;
+      position: relative;
+    }
+
+    .story-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.35), 0 0 0 1px rgba(11,228,65,0.2);
+    }
+
+    .story-quote-icon {
+      font-size: 56px;
+      line-height: 1;
+      color: var(--green);
+      opacity: 0.25;
+      font-family: Georgia, serif;
+      position: absolute;
+      top: 18px;
+      right: 24px;
+    }
+
+    .story-stars {
+      color: var(--green);
+      font-size: 16px;
+      margin-bottom: 14px;
+    }
+
+    .story-quote {
+      font-size: 15px;
+      color: var(--white);
+      line-height: 1.65;
+      margin-bottom: 22px;
+      font-style: italic;
+    }
+
+    .story-highlight {
+      background: rgba(11, 228, 65, 0.09);
+      border-left: 3px solid var(--green);
+      border-radius: 0 8px 8px 0;
+      padding: 10px 14px;
+      margin-bottom: 22px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--green);
+    }
+
+    .story-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .story-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--green), #057a22);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 16px;
+      color: var(--dark);
+      flex-shrink: 0;
+    }
+
+    .story-author-name { font-weight: 700; font-size: 15px; }
+    .story-author-role { font-size: 13px; color: var(--gray); }
+
+    /* ─── CTA SECTION ─── */
+    .cta-section {
+      padding: 90px 5%;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      bottom: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(11, 228, 65, 0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-box {
+      max-width: 680px;
+      margin: 0 auto;
+      background: var(--dark2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 56px 48px;
+      position: relative;
+    }
+
+    .cta-box h2 {
+      font-size: clamp(26px, 3.5vw, 40px);
+      font-weight: 900;
+      letter-spacing: -0.8px;
+      margin-bottom: 14px;
+    }
+
+    .cta-box p {
+      color: var(--gray);
+      font-size: 16px;
+      margin-bottom: 40px;
+    }
+
+    /* ─── GHL FORM PLACEHOLDER ─── */
+    .ghl-form-wrapper {
+      background: var(--dark3);
+      border: 2px dashed rgba(11, 228, 65, 0.3);
+      border-radius: 12px;
+      padding: 36px 24px;
+      text-align: center;
+      color: var(--gray);
+      font-size: 14px;
+    }
+
+    .ghl-form-wrapper .ghl-icon {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .ghl-form-wrapper strong {
+      display: block;
+      color: var(--white);
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-logo {
+      font-weight: 800;
+      font-size: 16px;
+    }
+
+    .footer-logo em {
+      color: var(--green);
+      font-style: normal;
+    }
+
+    footer p {
+      font-size: 13px;
+      color: var(--gray);
+    }
+
+    /* ─── LIGHTBOX ─── */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 16, 26, 0.92);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .lightbox.open { display: flex; }
+
+    .lightbox img {
+      max-width: 90vw;
+      max-height: 88vh;
+      border-radius: 12px;
+      box-shadow: 0 20px 80px rgba(0,0,0,0.7);
+    }
+
+    .lightbox-close {
+      position: fixed;
+      top: 20px;
+      right: 24px;
+      font-size: 32px;
+      color: var(--white);
+      cursor: pointer;
+      line-height: 1;
+      opacity: 0.75;
+    }
+
+    .lightbox-close:hover { opacity: 1; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 640px) {
+      .stat-item { padding: 24px 20px; }
+      .cta-box { padding: 36px 24px; }
+      .tabs-nav { gap: 6px; }
+      .tab-btn { padding: 10px 18px; font-size: 14px; }
+      footer { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── NAVIGATION ─── -->
+  <nav>
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-icon">F</div>
+      <span>FitPro <em>Consultants</em></span>
+    </a>
+    <a href="#contact" class="nav-cta">Parler à un Expert →</a>
+  </nav>
+
+  <!-- ─── HERO ─── -->
+  <section class="hero">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Résultats Réels. Coachs Réels.
+    </div>
+    <h1>Ce Que Nos Clients<br><span class="accent">Accomplissent Vraiment</span></h1>
+    <p>Études de cas, victoires et histoires de coachs fitness et propriétaires de gyms qui ont transformé leur business avec FitPro Consultants.</p>
+    <a href="#contact" class="hero-cta">Je Veux Ces Résultats Aussi →</a>
+  </section>
+
+  <!-- ─── STATS BAR ─── -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-num">200+</div>
+      <div class="stat-label">Coachs Accompagnés</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">$2M+</div>
+      <div class="stat-label">Revenus Générés</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">98%</div>
+      <div class="stat-label">Taux de Satisfaction</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">4.9★</div>
+      <div class="stat-label">Note Moyenne</div>
+    </div>
+  </div>
+
+  <!-- ─── TABS ─── -->
+  <section class="tabs-section">
+    <h2 class="section-title">Nos Preuves de Résultats</h2>
+    <p class="section-sub">Clique sur un onglet pour explorer les différentes formes de succès de nos clients.</p>
+
+    <div class="tabs-nav">
+      <button class="tab-btn active" onclick="showTab('etudes', this)">📋 Études de Cas</button>
+      <button class="tab-btn" onclick="showTab('victoires', this)">🏆 Victoires Clients</button>
+      <button class="tab-btn" onclick="showTab('histoires', this)">⭐ Histoires à Succès</button>
+    </div>
+
+    <!-- ─── ONGLET 1 : ÉTUDES DE CAS ─── -->
+    <div id="etudes" class="tab-panel active">
+      <div class="case-grid">
+
+        <!-- CARTE 1 — remplacer avec ton vrai cas -->
+        <div class="case-card">
+          <div class="case-header">
+            <div class="case-avatar">JM</div>
+            <div>
+              <div class="case-name">Jean-Michel R.</div>
+              <div class="case-type">Coach personnel — Montréal</div>
+            </div>
+          </div>
+          <div class="case-body">
+            <div class="case-row">
+              <div class="case-row-label">Le Défi</div>
+              <div class="case-row-text">Plateau à 3 clients/mois, aucun système d'acquisition, travaillait à perte sur son temps.</div>
+            </div>
+            <div class="case-row">
+              <div class="case-row-label">La Solution</div>
+              <div class="case-row-text">Mise en place d'un funnel automatisé + offre high-ticket restructurée à $2 500/mois.</div>
+            </div>
+            <div class="case-result">
+              <div class="case-result-label">Résultat en 90 jours</div>
+              <div class="case-result-text">$18 000/mois — 6× son revenu précédent</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARTE 2 — remplacer avec ton vrai cas -->
+        <div class="case-card">
+          <div class="case-header">
+            <div class="case-avatar">SL</div>
+            <div>
+              <div class="case-name">Sophie L.</div>
+              <div class="case-type">Propriétaire de gym — Québec</div>
+            </div>
+          </div>
+          <div class="case-body">
+            <div class="case-row">
+              <div class="case-row-label">Le Défi</div>
+              <div class="case-row-text">Gym en perte de membres, coûts fixes élevés, difficultés à fidéliser au-delà de 3 mois.</div>
+            </div>
+            <div class="case-row">
+              <div class="case-row-label">La Solution</div>
+              <div class="case-row-text">Stratégie de rétention + programmes de transformation 12 semaines vendus en prévente.</div>
+            </div>
+            <div class="case-result">
+              <div class="case-result-label">Résultat en 60 jours</div>
+              <div class="case-result-text">+42 nouveaux membres — rétention passée à 87%</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARTE 3 — remplacer avec ton vrai cas -->
+        <div class="case-card">
+          <div class="case-header">
+            <div class="case-avatar">MK</div>
+            <div>
+              <div class="case-name">Marc K.</div>
+              <div class="case-type">Coach en ligne — Ottawa</div>
+            </div>
+          </div>
+          <div class="case-body">
+            <div class="case-row">
+              <div class="case-row-label">Le Défi</div>
+              <div class="case-row-text">Lancement raté de son programme en ligne, 0 vente après 2 mois, épuisement professionnel.</div>
+            </div>
+            <div class="case-row">
+              <div class="case-row-label">La Solution</div>
+              <div class="case-row-text">Repositionnement d'offre + stratégie de contenu organique ciblée sur sa niche.</div>
+            </div>
+            <div class="case-result">
+              <div class="case-result-label">Résultat en 45 jours</div>
+              <div class="case-result-text">23 ventes à $997 = $22 931 en revenus</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ─── ONGLET 2 : VICTOIRES CLIENTS ─── -->
+    <div id="victoires" class="tab-panel">
+      <div class="wins-grid">
+
+        <!-- WIN 1 — remplacer l'image par ton screenshot réel -->
+        <div class="win-card" onclick="openLightbox(this)">
+          <div class="win-img-placeholder">
+            <!-- Pour ajouter une image : <img src="URL_DE_TON_SCREENSHOT" alt="Victoire client 1" /> -->
+            <!-- Sinon le placeholder s'affiche automatiquement -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+            <span>Ajouter screenshot ici</span>
+          </div>
+          <div class="win-caption">
+            <span class="win-caption-text">Victoire Client #1</span>
+            <span class="win-caption-tag">Revenus</span>
+          </div>
+        </div>
+
+        <!-- WIN 2 -->
+        <div class="win-card" onclick="openLightbox(this)">
+          <div class="win-img-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+            <span>Ajouter screenshot ici</span>
+          </div>
+          <div class="win-caption">
+            <span class="win-caption-text">Victoire Client #2</span>
+            <span class="win-caption-tag">Clients</span>
+          </div>
+        </div>
+
+        <!-- WIN 3 -->
+        <div class="win-card" onclick="openLightbox(this)">
+          <div class="win-img-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+            <span>Ajouter screenshot ici</span>
+          </div>
+          <div class="win-caption">
+            <span class="win-caption-text">Victoire Client #3</span>
+            <span class="win-caption-tag">Croissance</span>
+          </div>
+        </div>
+
+        <!-- WIN 4 -->
+        <div class="win-card" onclick="openLightbox(this)">
+          <div class="win-img-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+            <span>Ajouter screenshot ici</span>
+          </div>
+          <div class="win-caption">
+            <span class="win-caption-text">Victoire Client #4</span>
+            <span class="win-caption-tag">Revenus</span>
+          </div>
+        </div>
+
+        <!-- WIN 5 -->
+        <div class="win-card" onclick="openLightbox(this)">
+          <div class="win-img-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+            <span>Ajouter screenshot ici</span>
+          </div>
+          <div class="win-caption">
+            <span class="win-caption-text">Victoire Client #5</span>
+            <span class="win-caption-tag">Lancement</span>
+          </div>
+        </div>
+
+        <!-- WIN 6 -->
+        <div class="win-card" onclick="openLightbox(this)">
+          <div class="win-img-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+            <span>Ajouter screenshot ici</span>
+          </div>
+          <div class="win-caption">
+            <span class="win-caption-text">Victoire Client #6</span>
+            <span class="win-caption-tag">Croissance</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ─── ONGLET 3 : HISTOIRES À SUCCÈS ─── -->
+    <div id="histoires" class="tab-panel">
+      <div class="stories-grid">
+
+        <!-- HISTOIRE 1 -->
+        <div class="story-card">
+          <div class="story-quote-icon">“</div>
+          <div class="story-stars">★★★★★</div>
+          <p class="story-quote">
+            “Avant FitPro Consultants, je stressais chaque mois pour payer mon loyer. Aujourd’hui j’ai un business qui tourne en automatique et je prends des vacances pour la première fois depuis 4 ans.”
+          </p>
+          <div class="story-highlight">
+            De $2 800 → $14 500/mois en 5 mois
+          </div>
+          <div class="story-author">
+            <div class="story-avatar">JM</div>
+            <div>
+              <div class="story-author-name">Jean-Michel R.</div>
+              <div class="story-author-role">Coach personnel, Montréal</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- HISTOIRE 2 -->
+        <div class="story-card">
+          <div class="story-quote-icon">“</div>
+          <div class="story-stars">★★★★★</div>
+          <p class="story-quote">
+            “J’avais essayé 3 autres coachs business avant. Rien n’avait fonctionné. Avec FitPro Consultants, j’ai eu mes premiers $10K en un seul mois dès la 6e semaine.”
+          </p>
+          <div class="story-highlight">
+            Premier mois à $10 000+ après 6 semaines
+          </div>
+          <div class="story-author">
+            <div class="story-avatar">SL</div>
+            <div>
+              <div class="story-author-name">Sophie L.</div>
+              <div class="story-author-role">Coach nutrition, Québec</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- HISTOIRE 3 -->
+        <div class="story-card">
+          <div class="story-quote-icon">“</div>
+          <div class="story-stars">★★★★★</div>
+          <p class="story-quote">
+            “Ce qui m’a le plus surpris, c’est la vitesse. En moins de 2 mois, j’avais un système complet, des clients qualifiés qui rentrent chaque semaine. Le ROI est immense.”
+          </p>
+          <div class="story-highlight">
+            ROI de 8× sur l’investissement en 60 jours
+          </div>
+          <div class="story-author">
+            <div class="story-avatar">MK</div>
+            <div>
+              <div class="story-author-name">Marc K.</div>
+              <div class="story-author-role">Coach en ligne, Ottawa</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── SECTION CTA / FORMULAIRE ─── -->
+  <section class="cta-section" id="contact">
+    <div class="cta-box">
+      <h2>Prêt à Écrire Ta Propre Histoire à Succès?</h2>
+      <p>Remplis le formulaire ci-dessous et un membre de notre équipe te contactera dans les 24h.</p>
+
+      <!-- ════════════════════════════════════════════════════════════
+           COLLE ICI TON CODE DE FORMULAIRE GO HIGH LEVEL
+           Dans GHL : Sites → Funnels → ton funnel → Custom Code
+           Remplace TOUT le bloc .ghl-form-wrapper par ton embed code
+           ════════════════════════════════════════════════════════════ -->
+      <div class="ghl-form-wrapper">
+        <div class="ghl-icon">📋</div>
+        <strong>Formulaire Go High Level ici</strong>
+        <span>Remplace ce bloc par le code embed de ton formulaire GHL</span>
+      </div>
+      <!-- ════════════════════════════════════════════════════════════ -->
+
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ─── -->
+  <footer>
+    <div class="footer-logo">FitPro <em>Consultants</em></div>
+    <p>© 2025 FitPro Consultants. Tous droits réservés.</p>
+  </footer>
+
+  <!-- ─── LIGHTBOX ─── -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <span class="lightbox-close" onclick="closeLightbox()">×</span>
+    <img id="lightbox-img" src="" alt="Victoire client" />
+  </div>
+
+  <!-- ─── SCRIPTS ─── -->
+  <script>
+    function showTab(id, btn) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    function openLightbox(card) {
+      const img = card.querySelector('img');
+      if (!img) return;
+      document.getElementById('lightbox-img').src = img.src;
+      document.getElementById('lightbox').classList.add('open');
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('open');
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeLightbox();
+    });
+  </script>
+
+</body>
+</html>
